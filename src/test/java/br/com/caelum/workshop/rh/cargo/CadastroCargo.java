@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -97,6 +98,45 @@ public class CadastroCargo {
 		
 		//verifica o texto da mensagem de erro
 		Assert.assertTrue(msgErro.getText().equals("Salário mínimo não pode ser maior que salário máximo!"));
+	}
+	
+	@Test
+	public void devePermitirCadastrarCargoComInformacoesCorretas() {
+		//chama o metodo para logar no sistema
+		logarNoSistema();
+		
+		//navega pra pagina de cadastro de cargos:
+		firefox.navigate().to(urlSistema + "/cargos/form");
+		
+		//encontra o campo 'Nome' e preenche com 'Cargo teste':
+		firefox.findElement(By.name("nome")).sendKeys("Cargo teste");
+		
+		//encontra o campo 'Salario Minimo' e preenche com '3000,00':
+		firefox.findElement(By.name("faixaSalarial.salarioMinimo")).sendKeys("2000,00");
+		
+		//encontra o campo 'Salario Maximo' e preenche com '2000,00':
+		firefox.findElement(By.name("faixaSalarial.salarioMaximo")).sendKeys("3000,00");
+		
+		//encontra o botao de gravar e clica nele
+		firefox.findElement(By.cssSelector(".btn-primary")).click();
+		
+		//encontra a ultima linha da tabela:
+		WebElement ultimaLinhaDaTabela = firefox.findElement(By.cssSelector(".table tbody tr:last-child"));
+		
+		//encontra a coluna do nome do cargo:
+		WebElement colunaNome = ultimaLinhaDaTabela.findElement(By.cssSelector("td:nth-child(2)"));
+		
+		//verifica o nome do ultimo cargo cadastrado
+		Assert.assertTrue(colunaNome.getText().equals("Cargo teste"));
+		
+		//apaga o cargo, para nao interferir na proxima execucao dos testes
+		ultimaLinhaDaTabela.findElement(By.cssSelector(".btn-excluir")).click();
+		
+		//muda o foco do browser para a popup de confirmacao de exclusao
+		Alert popupExclusao = firefox.switchTo().alert();
+		
+		//clica no botao ok da popup de confirmacao de exclusao
+		popupExclusao.accept();
 	}
 
 }
