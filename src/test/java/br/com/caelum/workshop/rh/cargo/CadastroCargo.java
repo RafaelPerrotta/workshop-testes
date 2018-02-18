@@ -15,23 +15,23 @@ public class CadastroCargo {
 	private String urlSistema = "https://workshop-testes.herokuapp.com";
 	private WebDriver firefox;
 	
-	//metodo before e executado antes de cada um dos testes
+	//metodo com @Before é executado antes de cada um dos testes
 	@Before
 	public void before() {
 		//indica o local do driver do firefox:
-		System.setProperty("webdriver.gecko.driver", "src/main/resources/drivers/firefox/macos/geckodriver");
+		System.setProperty("webdriver.gecko.driver", "src/test/resources/drivers/firefox/windows/geckodriver");
 		
 		//Abre o Firefox:
 		firefox = new FirefoxDriver();
 	}
 	
-	//metodo after e executado apos cada um dos testes
+	//metodo com @After é executado apos cada um dos testes
 	@After
 	public void after() {
 		firefox.close();
 	}
 	
-	//metodo pra isolar o codigo de logar no sistema
+	//metodo pra isolar o codigo de logar no sistema e evitar que esse trecho de codigo se repita em todos os metodos de teste
 	private void logarNoSistema() {
 		//navega pra pagina do login do sistema:
 		firefox.navigate().to(urlSistema + "/login");
